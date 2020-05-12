@@ -6,21 +6,35 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private GameObject _muzzle_flash;
+    [SerializeField]
+    private GameObject _hitMarker;
 
     private CharacterController _controller;
+    private AudioSource _audioSource;
+    private UIManager _uiManager;
 
     [SerializeField]
     private float _speed = 3.5f;
     [SerializeField]
     private float _gravity = 9.81f;
 
+    [SerializeField]
+    private int currentAmmo;
+    private int maxAmmo = 150;
+
+    private bool isRealoading = false;
+
     // Start is called before the first frame update
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+        _audioSource = GetComponent<AudioSource>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        currentAmmo = maxAmmo;
     }
 
     // Update is called once per frame
@@ -29,6 +43,8 @@ public class Player : MonoBehaviour
         Movement();
 
         Shoot();
+
+        Reload();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -53,21 +69,48 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && currentAmmo > 0)
         {
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
 
-            if (Physics.Raycast(rayOrigin, out hitInfo))
+            currentAmmo--;
+            _uiManager.UpdateAmmo(currentAmmo, maxAmmo);
+
+            if (Physics.Raycast(rayOrigin, out hitInfo)) // Ponto de onde parte e ponto de onde colide
             {
                 Debug.Log("Raycast hit " + hitInfo.transform.name);
+                GameObject hitMarker = Instantiate(_hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)) as GameObject;
+                Destroy(hitMarker, 1f);
             }
 
+            if (_audioSource.isPlaying == false)
+            {
+                _audioSource.Play();
+            }
             _muzzle_flash.SetActive(true);
         }
         else
         {
+            _audioSource.Stop();
             _muzzle_flash.SetActive(false);
         }
+    }
+
+    private void Reload()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && isRealoading == false)
+        {
+            isRealoading = true;
+            StartCoroutine(ReloadCoroutine());
+        }
+    }
+
+    IEnumerator ReloadCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        currentAmmo = maxAmmo;
+        _uiManager.UpdateAmmo(currentAmmo, maxAmmo);
+        isRealoading = false;
     }
 }
