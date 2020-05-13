@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int currentAmmo;
     private int maxAmmo = 150;
+    [SerializeField]
+    private int coins = 0;
 
     private bool isRealoading = false;
 
@@ -112,5 +114,10 @@ public class Player : MonoBehaviour
         currentAmmo = maxAmmo;
         _uiManager.UpdateAmmo(currentAmmo, maxAmmo);
         isRealoading = false;
+    }
+
+    public void CollectCoin()
+    {
+        coins++;
     }
 }
