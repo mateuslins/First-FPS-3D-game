@@ -29,7 +29,7 @@ public class Coin : MonoBehaviour
                     player.CollectCoin();
                     AudioSource.PlayClipAtPoint(_audioClip, Camera.main.transform.position, 1f);
                     _uiManager.ShowInteractText(false);
-                    _uiManager.ShowCoinImage();
+                    _uiManager.ShowCoinImage(true);
                     Destroy(gameObject);
                 }
             }

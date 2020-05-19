@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject _interact;
     [SerializeField]
+    private GameObject _moneyText;
+    [SerializeField]
     private GameObject _coinImage;
 
     public void UpdateAmmo(int count, int max)
@@ -22,8 +24,13 @@ public class UIManager : MonoBehaviour
         _interact.SetActive(state);
     }
 
-    public void ShowCoinImage()
+    public void ShowMoneyText(bool state)
     {
-        _coinImage.SetActive(true);
+        _moneyText.SetActive(state);
+    }
+
+    public void ShowCoinImage(bool state)
+    {
+        _coinImage.SetActive(state);
     }
 }

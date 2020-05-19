@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     private GameObject _muzzle_flash;
     [SerializeField]
     private GameObject _hitMarker;
+    [SerializeField]
+    private GameObject _weapon;
 
     private CharacterController _controller;
     private AudioSource _audioSource;
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour
     private int coins = 0;
 
     private bool isRealoading = false;
+    private bool isWeaponActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -71,7 +74,7 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        if (Input.GetMouseButton(0) && currentAmmo > 0)
+        if (Input.GetMouseButton(0) && currentAmmo > 0 && isWeaponActive == true)
         {
             Ray rayOrigin = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hitInfo;
@@ -119,5 +122,17 @@ public class Player : MonoBehaviour
     public void CollectCoin()
     {
         coins++;
+    }
+
+    public bool BuyWeapon()
+    {
+        if (coins != 0)
+        {
+            coins--;
+            _weapon.SetActive(true);
+            isWeaponActive = true;
+            return true;
+        }
+        return false;
     }
 }
