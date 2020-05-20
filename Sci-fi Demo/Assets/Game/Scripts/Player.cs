@@ -87,6 +87,13 @@ public class Player : MonoBehaviour
                 Debug.Log("Raycast hit " + hitInfo.transform.name);
                 GameObject hitMarker = Instantiate(_hitMarker, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)) as GameObject;
                 Destroy(hitMarker, 1f);
+
+                // Verificar se atingiu a caixa
+                Destructable crate = hitInfo.transform.GetComponent<Destructable>();
+                if (crate != null)
+                {
+                    crate.DestroyCrate();
+                }
             }
 
             if (_audioSource.isPlaying == false)
